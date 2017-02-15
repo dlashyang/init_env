@@ -1,0 +1,2 @@
+hardstatus string "[screen %n%?: %t%?] %h"
+defscrollback 6000
