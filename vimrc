@@ -427,46 +427,20 @@ set clipboard+=unnamed
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => plugin configure
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vundle
-" set the runtime path to include Vundle and initialize
-" alternatively, pass a path where Vundle should install bundles
-"   let path = '~/some/path/here'
-"   call vundle#rc(path)
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+call plug#begin()
+Plug 'Shougo/unite.vim'
+" Plug 'majutsushi/tagbar'
+" Plug 'vim-scripts/Mark'
 
-" let Vundle manage Vundle, required
-Bundle 'VundleVim/Vundle.vim'
+" On-demand loading
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
+" Plug 'vim-scripts/taglist.vim'
 
-" The following are examples of different formats supported.
-" Keep bundle commands between here and filetype plugin indent on.
-" scripts on GitHub repos
-Bundle 'drmingdrmer/xptemplate'
-Bundle 'Shougo/unite.vim'
-Bundle 'rking/ag.vim'
+call plug#end()
 
-" The sparkup vim script is in a subdirectory of this repo called vim.
-" Pass the path to set the runtimepath properly.
-"Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
-" scripts from http://vim-scripts.org/vim/scripts.html
-Bundle 'L9'
-Bundle 'syntastic'
-Bundle 'taglist.vim'
-Bundle 'Mark'
-
-" scripts not on GitHub
-"Bundle 'git://git.wincent.com/command-t.git'
-" git repos on your local machine (i.e. when working on your own plugin)
-"Bundle 'file:///home/gmarik/path/to/plugin'
-" ...
-call vundle#end()
-
-" Tag list (ctags)
-let Tlist_Ctags_Cmd = '/usr/bin/ctags'
-let Tlist_Show_One_File = 1
-let Tlist_Exit_OnlyWindow = 1
-let Tlist_GainFocus_On_ToggleOpen = 1
-map <silent> <leader>l :TlistToggle<cr>
+" tagbar hotkey
+map <silent> <leader>l :TagbarToggle<cr>
 
 " Unite hotkey
 nnoremap <silent> <leader>b :<C-u>Unite buffer bookmark<CR>
