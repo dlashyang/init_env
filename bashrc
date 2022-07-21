@@ -8,6 +8,7 @@ umask 022
 export PS1="\[\033[32m\][\t]-[\w]\[\033[0m\]\n\[\033[1;36m\]\h\[\033[1;33m\]-> \[\033[0m\]"
 # PATH="$PATH:~/bin"
 # source ~/.git-completion.bash
+export SCREENDIR="$HOME/.screen"
 
 alias grep='grep --color'                     # show differences in colour
 
