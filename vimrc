@@ -429,13 +429,15 @@ set clipboard+=unnamed
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 call plug#begin()
 Plug 'Shougo/unite.vim'
-" Plug 'majutsushi/tagbar'
+Plug 'junegunn/fzf'
+Plug 'ycm-core/YouCompleteMe'
+Plug 'Vimjas/vim-python-pep8-indent'
+Plug 'dense-analysis/ale'
 " Plug 'vim-scripts/Mark'
 
 " On-demand loading
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
-" Plug 'vim-scripts/taglist.vim'
 
 call plug#end()
 
@@ -444,3 +446,12 @@ map <silent> <leader>l :TagbarToggle<cr>
 
 " Unite hotkey
 nnoremap <silent> <leader>b :<C-u>Unite buffer bookmark<CR>
+
+let g:ale_linters = {
+      \   'python': ['flake8', 'pylint'],
+      \}
+let g:ale_fixers = {
+      \    'python': ['yapf'],
+      \}
+" nmap <F10> :ALEFix<CR>
+let g:ale_fix_on_save = 1
