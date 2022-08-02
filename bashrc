@@ -6,9 +6,11 @@ umask 022
 # export PS1="\h:\W$"
 # export PS1="\[\033[32m\][\t]\[\033[32m\]-[\[\033[32m\]\w]\[\033[0m\]\n\[\033[1;36m\]\h\[\033[1;33m\]-> \[\033[0m\]"
 export PS1="\[\033[32m\][\t]-[\w]\[\033[0m\]\n\[\033[1;36m\]\h\[\033[1;33m\]-> \[\033[0m\]"
-# PATH="$PATH:~/bin"
 # source ~/.git-completion.bash
 export SCREENDIR="$HOME/.screen"
+export GOPATH="$HOME/go"
+
+export PATH="$PATH:~/bin:~/.local/bin:/usr/local/go/bin:$GOPATH/bin"
 
 alias grep='grep --color'                     # show differences in colour
 
@@ -17,6 +19,10 @@ alias ls='ls -ihF --color=tty'                 # classify files in colour
 alias ll='ls -il'                              # long list
 alias la='ls -iA'                              # all but . and ..
 alias l='ls -CF'                              #
+alias tls='tmux ls'
+alias ta='tmux attach -t'
+alias tn='tmux new -s'
+alias tkill='tmux kill-session -t'
 
 alias gdf="git diff --no-index"
 #alias kdf="kdiff3"
@@ -75,3 +81,5 @@ cd_func ()
 }
 
 alias cd=cd_func
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
