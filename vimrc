@@ -120,6 +120,9 @@ set tm=500
 " Show line number
 set number
 
+" Add a bit extra margin to the left
+set foldcolumn=1
+
 " Highlight the current line
 set cursorline
 
@@ -144,7 +147,7 @@ if has("gui_running")
 endif
 
 " Set utf8 as standard encoding and en_US as the standard language
-"set encoding=utf8
+set encoding=utf8
 
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
@@ -291,6 +294,7 @@ autocmd BufWrite *.c :call DeleteTrailingWS()
 autocmd BufWrite *.h :call DeleteTrailingWS()
 autocmd BufWrite *.cc :call DeleteTrailingWS()
 autocmd BufWrite *.py :call DeleteTrailingWS()
+autocmd BufWrite *.go :call DeleteTrailingWS()
 autocmd BufWrite *.coffee :call DeleteTrailingWS()
 
 
@@ -447,11 +451,19 @@ map <silent> <leader>l :TagbarToggle<cr>
 " Unite hotkey
 nnoremap <silent> <leader>b :<C-u>Unite buffer bookmark<CR>
 
+" ale settings
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 0
 let g:ale_linters = {
       \   'python': ['flake8', 'pylint'],
+      \   'go': ['gofmt', 'revive', 'staticcheck'],
       \}
 let g:ale_fixers = {
       \    'python': ['yapf'],
+      \    'go': ['gofmt'],
       \}
 " nmap <F10> :ALEFix<CR>
 let g:ale_fix_on_save = 1
+
+" pylint
+let g:ale_python_pylint_options = '--rcfile /home/dlash/workspace/pylintrc'
