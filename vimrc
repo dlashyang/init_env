@@ -3,9 +3,6 @@
 "       Amir Salihefendic
 "       http://amix.dk - amix@amix.dk
 "
-" Version: 
-"       5.0 - 29/05/12 15:43:36
-"
 " Blog_post: 
 "       http://amix.dk/blog/post/19691#The-ultimate-Vim-configuration-on-Github
 "
@@ -45,7 +42,7 @@
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sets how many lines of history VIM has to remember
-set history=300
+set history=500
 
 " Enable filetype plugins
 filetype plugin on
@@ -53,6 +50,7 @@ filetype indent on
 
 " Set to auto read when a file is changed from the outside
 set autoread
+au FocusGained,BufEnter * checktime
 
 " With a map leader it's possible to do extra key combinations
 " like <leader>w saves the current file
@@ -69,17 +67,28 @@ nmap <leader>w :w!<cr>
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=5
 
-" Turn on the WiLd menu
+" Avoid garbled characters in Chinese language windows OS
+let $LANG='en'
+set langmenu=en
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+
+" Turn on the Wild menu
 set wildmenu
 
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc
+if has("win16") || has("win32")
+    set wildignore+=.git\*,.hg\*,.svn\*
+else
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+endif
 
 "Always show current position
 set ruler
 
 " Height of the command bar
-set cmdheight=2
+set cmdheight=1
 
 " A buffer becomes hidden when it is abandoned
 set hid
@@ -116,15 +125,16 @@ set noerrorbells
 set novisualbell
 set t_vb=
 set tm=500
+" Properly disable sound on errors on MacVim
+if has("gui_macvim")
+    autocmd GUIEnter * set vb t_vb=
+endif
 
 " Show line number
 set number
 
 " Add a bit extra margin to the left
 set foldcolumn=1
-
-" Highlight the current line
-set cursorline
 
 " Vertical the diff window
 set diffopt+=vertical
@@ -135,13 +145,22 @@ set diffopt+=vertical
 " Enable syntax highlighting
 syntax enable
 
-colorscheme desert
+" Enable 256 colors palette in Gnome Terminal
+if $COLORTERM == 'gnome-terminal'
+    set t_Co=256
+endif
+
+try
+    colorscheme desert
+catch
+endtry
+
 set background=dark
 
 " Set extra options when running in GUI mode
 if has("gui_running")
-    "set guioptions-=T
-    set guioptions+=e
+    set guioptions-=T
+    set guioptions-=e
     set t_Co=256
     set guitablabel=%M\ %t
 endif
@@ -156,7 +175,7 @@ set ffs=unix,dos,mac
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Turn backup off, since most stuff is in SVN, git et.c anyway...
+" Turn backup off, since most stuff is in SVN, git etc. anyway...
 set nobackup
 set nowb
 set noswapfile
@@ -184,32 +203,24 @@ set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
 
-" Color trailing whitespace and tabs
-"highlight ExtraWhitespace ctermbg=red guibg=red
-"au ColorScheme * highlight ExtraWhitespace guibg=red
-"au BufEnter * match ExtraWhitespace /\s\+$\|\t/
-"au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$\|\t/
-"au InsertLeave * match ExtraWhiteSpace /\s\+$\|\t/
 
 """"""""""""""""""""""""""""""
 " => Visual mode related
 """"""""""""""""""""""""""""""
 " Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
-vnoremap <silent> * :call VisualSelection('f')<CR>
-vnoremap <silent> # :call VisualSelection('b')<CR>
+vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
+vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 
+" When you press <leader>r you can search and replace the selected text
+vnoremap <silent> <leader>r :call VisualSelection('replace', '')<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs, windows and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Treat long lines as break lines (useful when moving around in them)
-map j gj
-map k gk
-
 " Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
 map <space> /
-map <c-space> ?
+map <C-space> ?
 
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
@@ -221,20 +232,30 @@ map <C-h> <C-W>h
 map <C-l> <C-W>l
 
 " Close the current buffer
-map <leader>bd :Bclose<cr>
+map <leader>bd :Bclose<cr>:tabclose<cr>gT
 
 " Close all the buffers
-map <leader>ba :1,1000 bd!<cr>
+map <leader>ba :bufdo bd<cr>
+
+map <leader>l :bnext<cr>
+map <leader>h :bprevious<cr>
 
 " Useful mappings for managing tabs
-map <leader>tn :tabnew<cr>
-map <leader>to :tabonly<cr>
-map <leader>tc :tabclose<cr>
-map <leader>tm :tabmove
+" map <leader>tn :tabnew<cr>
+" map <leader>to :tabonly<cr>
+" map <leader>tc :tabclose<cr>
+" map <leader>tm :tabmove
+" map <leader>t<leader> :tabnext
+
+" Let 'tl' toggle between this and the last accessed tab
+" let g:lasttab = 1
+" nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
+" au TabLeave * let g:lasttab = tabpagenr()
+
 
 " Opens a new tab with the current buffer's path
 " Super useful when editing files in the same directory
-map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+" map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
 
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
@@ -242,17 +263,12 @@ map <leader>cd :cd %:p:h<cr>:pwd<cr>
 " Specify the behavior when switching between buffers
 try
   set switchbuf=useopen,usetab,newtab
-  set stal=1
+  set stal=2
 catch
 endtry
 
 " Return to last edit position when opening files (You want this!)
-autocmd BufReadPost *
-     \ if line("'\"") > 0 && line("'\"") <= line("$") |
-     \   exe "normal! g`\"" |
-     \ endif
-" Remember info about open buffers on close
-set viminfo^=%
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 
 """"""""""""""""""""""""""""""
@@ -271,7 +287,7 @@ set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ 
 " Remap VIM 0 to first non-blank character
 "map 0 ^
 
-" Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
+" Move a line of text using ALT+[jk] or Command+[jk] on mac
 nmap <C-Down> mz:m+<cr>`z
 nmap <C-Up> mz:m-2<cr>`z
 vmap <C-Down> :m'>+<cr>`<my`>mzgv`yo`z
@@ -284,50 +300,18 @@ if has("mac") || has("macunix")
   vmap <D-k> <M-k>
 endif
 
-" Delete trailing white space on save, useful for Python and CoffeeScript ;)
-func! DeleteTrailingWS()
-  exe "normal mz"
-  %s/\s\+$//ge
-  exe "normal `z"
-endfunc
-autocmd BufWrite *.c :call DeleteTrailingWS()
-autocmd BufWrite *.h :call DeleteTrailingWS()
-autocmd BufWrite *.cc :call DeleteTrailingWS()
-autocmd BufWrite *.py :call DeleteTrailingWS()
-autocmd BufWrite *.go :call DeleteTrailingWS()
-autocmd BufWrite *.coffee :call DeleteTrailingWS()
+" Delete trailing white space on save, useful for some filetypes ;)
+fun! CleanExtraSpaces()
+    let save_cursor = getpos(".")
+    let old_query = getreg('/')
+    silent! %s/\s\+$//e
+    call setpos('.', save_cursor)
+    call setreg('/', old_query)
+endfun
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vimgrep searching and cope displaying
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" When you press gv you vimgrep after the selected text
-vnoremap <silent> gv :call VisualSelection('gv')<CR>
-
-" Open vimgrep and put the cursor in the right position
-map <leader>g :vimgrep // **/*.<left><left><left><left><left><left><left>
-
-" Vimgreps in the current file
-map <leader><space> :vimgrep // <C-R>%<C-A><right><right><right><right><right><right><right><right><right>
-
-" When you press <leader>r you can search and replace the selected text
-vnoremap <silent> <leader>r :call VisualSelection('replace')<CR>
-
-" Do :help cope if you are unsure what cope is. It's super useful!
-"
-" When you search with vimgrep, display your results in cope by doing:
-"   <leader>cc
-"
-" To go to the next search result do:
-"   <leader>n
-"
-" To go to the previous search results do:
-"   <leader>p
-"
-map <leader>cc :botright cope<cr>
-map <leader>co ggVGy:tabnew<cr>:set syntax=qf<cr>pgg
-map <leader>n :cn<cr>
-map <leader>p :cp<cr>
+if has("autocmd")
+    autocmd BufWritePre *.txt,*.c,*.cc,*.h,*.py,*.go,*.sh, :call CleanExtraSpaces()
+endif
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -347,52 +331,30 @@ map <leader>s? z=
 " => Misc
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Remove the Windows ^M - when the encodings gets messed up
-"noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
-" Quickly open a buffer for scripbble
-"map <leader>q :e ~/buffer<cr>
+" Quickly open a buffer for scribble
+map <leader>q :e ~/buffer<cr>
+
+" Quickly open a markdown buffer for scribble
+map <leader>x :e ~/buffer.md<cr>
 
 " Toggle paste mode on and off
-"map <leader>pp :setlocal paste!<cr>
+map <leader>pp :setlocal paste!<cr>
 
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! CmdLine(str)
-    exe "menu Foo.Bar :" . a:str
-    emenu Foo.Bar
-    unmenu Foo
-endfunction
 
-function! VisualSelection(direction) range
-    let l:saved_reg = @"
-    execute "normal! vgvy"
-
-    let l:pattern = escape(@", '\\/.*$^~[]')
-    let l:pattern = substitute(l:pattern, "\n$", "", "")
-
-    if a:direction == 'b'
-        execute "normal ?" . l:pattern . "^M"
-    elseif a:direction == 'gv'
-        call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
-    elseif a:direction == 'replace'
-        call CmdLine("%s" . '/'. l:pattern . '/')
-    elseif a:direction == 'f'
-        execute "normal /" . l:pattern . "^M"
-    endif
-
-    let @/ = l:pattern
-    let @" = l:saved_reg
-endfunction
 
 
 " Returns true if paste mode is enabled
 function! HasPaste()
     if &paste
         return 'PASTE MODE  '
-    en
+    endif
     return ''
 endfunction
 
@@ -417,6 +379,28 @@ function! <SID>BufcloseCloseIt()
    endif
 endfunction
 
+
+function! CmdLine(str)
+    call feedkeys(":" . a:str)
+endfunction
+
+function! VisualSelection(direction, extra_filter) range
+    let l:saved_reg = @"
+    execute "normal! vgvy"
+
+    let l:pattern = escape(@", "\\/.*'$^~[]")
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+
+    if a:direction == 'gv'
+        call CmdLine("Ack '" . l:pattern . "' " )
+    elseif a:direction == 'replace'
+        call CmdLine("%s" . '/'. l:pattern . '/')
+    endif
+
+    let @/ = l:pattern
+    let @" = l:saved_reg
+endfunction
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Private settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -427,6 +411,21 @@ set tags=tags;
 let &termencoding=&encoding
 set fileencodings=utf-8,gbk,utf-16,big5
 set clipboard+=unnamed
+set showtabline=0
+
+" Color trailing whitespace and tabs
+"highlight ExtraWhitespace ctermbg=red guibg=red
+"au ColorScheme * highlight ExtraWhitespace guibg=red
+"au BufEnter * match ExtraWhitespace /\s\+$\|\t/
+"au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$\|\t/
+"au InsertLeave * match ExtraWhiteSpace /\s\+$\|\t/
+
+" Treat long lines as break lines (useful when moving around in them)
+map j gj
+map k gk
+
+" Remember info about open buffers on close
+set viminfo^=%
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => plugin configure
@@ -446,7 +445,7 @@ Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
 call plug#end()
 
 " tagbar hotkey
-map <silent> <leader>l :TagbarToggle<cr>
+map <silent> <leader>t :TagbarToggle<cr>
 
 " Unite hotkey
 nnoremap <silent> <leader>b :<C-u>Unite buffer bookmark<CR>
