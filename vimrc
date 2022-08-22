@@ -433,7 +433,7 @@ set viminfo^=%
 call plug#begin()
 Plug 'Shougo/unite.vim'
 Plug 'junegunn/fzf'
-Plug 'ycm-core/YouCompleteMe'
+" Plug 'ycm-core/YouCompleteMe'
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'dense-analysis/ale'
 " Plug 'vim-scripts/Mark'
