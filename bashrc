@@ -1,31 +1,18 @@
-#
-# CCASE_BLD_UMASK 007
-# CLEARCASE_RMVIEW_CR_FIX 1
-# backed out 2012-05-23 #module add sudo/1.6.8p12_pam
 umask 022
 # export PS1="\h:\W$"
 # export PS1="\[\033[32m\][\t]\[\033[32m\]-[\[\033[32m\]\w]\[\033[0m\]\n\[\033[1;36m\]\h\[\033[1;33m\]-> \[\033[0m\]"
 export PS1="\[\033[32m\][\t]-[\w]\[\033[0m\]\n\[\033[1;36m\]\h\[\033[1;33m\]-> \[\033[0m\]"
-# source ~/.git-completion.bash
 export SCREENDIR="$HOME/.screen"
-export GOPATH="$HOME/go"
 
-export PATH="$PATH:~/bin:~/.local/bin:/usr/local/go/bin:$GOPATH/bin"
+export PATH="$PATH:~/bin:~/.local/bin"
 
-alias grep='grep --color'                     # show differences in colour
-
+alias grep='grep --color'
 alias vi="vim"
-alias ls='ls -ihF --color=tty'                 # classify files in colour
-alias ll='ls -il'                              # long list
-alias la='ls -iA'                              # all but . and ..
-alias l='ls -CF'                              #
-alias tls='tmux ls'
-alias ta='tmux attach -t'
-alias tn='tmux new -s'
-alias tkill='tmux kill-session -t'
-
+alias ls='ls -ihF --color=tty'
+alias ll='ls -il'
+alias la='ls -iA'
+alias l='ls -CF'
 alias gdf="git diff --no-index"
-#alias kdf="kdiff3"
 alias vdf="vimdiff"
 
 cd_func ()
@@ -79,7 +66,11 @@ cd_func ()
 
     return 0
 }
-
 alias cd=cd_func
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+#alias for tmux
+# alias tls='tmux ls'
+# alias ta='tmux attach -t'
+# alias tn='tmux new -s'
+# alias tkill='tmux kill-session -t'
+
